@@ -17,7 +17,7 @@ full XML file of all projects linked to the EUTF is available
 [here](https://eutf.akvoapp.org/en/organisation/3394/).
 
 The version used for this analysis was last updated on 17. December
-2020.
+2021.
 
 # Create datasets
 
