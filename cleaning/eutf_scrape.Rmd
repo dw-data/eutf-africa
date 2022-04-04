@@ -1,0 +1,296 @@
+---
+title: "EUTF data from AKVO"
+output:
+  md_document:
+    variant: gfm
+number_sections: yes
+---
+# EUTF for Africa: Data cleaning
+
+**Script by:** [Kira Schacht](https://www.twitter.com/daten_drang)
+
+
+# Files
+
+| Name | Content |
+|---|---|
+| `scripts/eutf_scrape.Rmd`	| The main R markdown script. Run in RStudio to reproduce this analysis. |
+|`scripts/data.RData` | The R Data file containing the imported datasets. Use if csv import doesn't work. |
+|`data/...` | Data files |
+
+
+# Data source
+
+The data on EUTF projects comes from the AKVO monitoring platform. A full XML file of all projects linked to the EUTF is available [here](https://eutf.akvoapp.org/en/organisation/3394/).
+
+The version used for this analysis was last updated on 17. December 2020.
+
+# Create datasets
+
+Here is a step-by-step-explanation of the code we used to create our analysis data sets. You can explore it yourself by opening `eutf_scrape.Rmd` in RStudio.
+
+```{r setup, echo = FALSE}
+#Setup
+
+knitr::opts_chunk$set(echo = FALSE)
+#load packages
+
+knitr::opts_knit$set(root.dir = "/Users/schachtk/Documents/DW/xxx_EUTF/extern")
+
+library(needs)
+needs(tidyverse, XML)
+```
+
+## Read data
+
+Read raw XML data from file `akvo-20211217-130832.xml`
+
+```{r}
+
+d = xmlParse("data/raw/akvo-20211217-130832.xml")
+
+```
+
+
+## Project info dataset
+
+For every project (XML node `iati-activity`), create one row containing:
+
+- IATI project ID
+- project title
+- project summary
+- partner organizations
+  - funding partners (in XML: `role=1`)
+  - accountable partners (in XML: `role=2`)
+  - extending partners (in XML: `role=3`)
+  - implementing partners (in XML: `role=4`)
+- project start and end dates (in XML: `activity-date type='2'` and `type='3'`)
+- project budget
+- recipient country or countries
+- project location
+- project topics according to the 4 thematic fields of the EUTF:
+  1. Greater economic and employment opportunities
+  2. Strengthening resilience
+  3. Improved migration management
+  4. Improved governance and conflict prevention
+- OECD development aid CRS purpose codes
+- URLS of linked documents
+- related activities: parent projects, child  projects, sibling projects
+
+
+```{r}
+d_projects = xpathApply(d, "//iati-activity", function(node){
+  data.frame(
+    #IATI project ID
+    iati_id = node %>% xpathSApply("./description[@avko:type='4']", xmlValue,
+                                   namespaces = c("avko" = "http://akvo.org/iati-activities")) %>% ifelse(length(.)==0, NA, .),
+    #Project title
+    title = node[["title"]] %>% xmlValue %>% ifelse(length(.)==0, NA, .),
+    #summary
+    summary = node %>% xpathSApply("./description[@avko:type='5']", xmlValue,
+                                   namespaces = c("avko" = "http://akvo.org/iati-activities")) %>% ifelse(length(.)==0, NA, .),
+    #partner organizations
+    partner_funding = node %>% xpathSApply("./participating-org[@role='1']", xmlValue) %>%
+      paste(., collapse = ", ") %>% ifelse(length(.)==0, NA, .),
+    partner_accountable = node %>% xpathSApply("./participating-org[@role='2']", xmlValue) %>%
+      paste(., collapse = ", ") %>% ifelse(length(.)==0, NA, .),
+    partner_extending = node %>% xpathSApply("./participating-org[@role='3']", xmlValue) %>%
+      paste(., collapse = ", ") %>% ifelse(length(.)==0, NA, .),
+    partner_implementing = node %>% xpathSApply("./participating-org[@role='4']", xmlValue) %>%
+      paste(., collapse = ", ") %>% ifelse(length(.)==0, NA, .),
+    #project start and end dates
+    date_start = node %>% xpathSApply("./activity-date[@type='2']", xmlGetAttr, "iso-date") %>% ifelse(length(.)==0, NA, .) %>% as.Date,
+    date_end = node %>% xpathSApply("./activity-date[@type='3']", xmlGetAttr, "iso-date") %>% ifelse(length(.)==0, NA, .) %>% as.Date,
+    #project budget
+    budget = node %>% xpathSApply("./budget", xmlValue) %>% as.numeric %>% sum %>% ifelse(length(.)==0, NA, .),
+    #recipient countries
+    recipient_country = node %>% xpathSApply("./recipient-country", xmlGetAttr, "code") %>%
+      paste(., collapse = ", ") %>% ifelse(length(.)==0, "", .),
+    #project location
+    location = node %>% xpathSApply("./location/name/narrative", xmlValue) %>% paste(., collapse = ", ") %>% ifelse(length(.)==0, "", .),
+    location_code = node %>% xpathSApply("./location/administrative", xmlGetAttr, "code") %>%
+      paste(., collapse = ", ") %>% ifelse(length(.)==0, "", .),
+    #project topics
+    topics = node %>% xpathSApply("./sector", xmlGetAttr, "code") %>% `[`(grepl("TFP",.)) %>%
+      paste(., collapse = ", ") %>% ifelse(length(.)==0, "", .),
+    #OECD development aid CRS purpose codes
+    oecd_purpose = node %>% xpathSApply("./sector[vocabulary='1']", xmlGetAttr, "code") %>%
+      paste(., collapse = ", ") %>% ifelse(length(.)==0, "", .),
+    #linked documents
+    links = node %>% xpathSApply("./document-link", xmlGetAttr, "url") %>% `[`(grepl("pdf|doc",.)) %>%
+      paste(., collapse = ", ") %>% ifelse(length(.)==0, "", .),
+    #related activities:
+    project_parent = node %>% xpathSApply("./related-activity[@type='1']", xmlGetAttr, "ref") %>%
+      paste(., collapse = ", ") %>% ifelse(length(.)==0, NA, .),
+    project_child = node %>% xpathSApply("./related-activity[@type='2']", xmlGetAttr, "ref") %>%
+      paste(., collapse = ", ") %>% ifelse(length(.)==0, NA, .),
+    project_sibling = node %>% xpathSApply("./related-activity[@type='3']", xmlGetAttr, "ref") %>%
+      paste(., collapse = ", ") %>% ifelse(length(.)==0, NA, .),
+    stringsAsFactors = FALSE
+  )
+}) %>%
+  #combine into one data frame
+  bind_rows() %>%
+  #clean IATI IDs
+  mutate(across(c(17:19), gsub, pattern = "XI[-_]IAT[IA][-_]EC[-_]DEVCO[-_]|XI-IATI-EC_NEAR_", replacement = "", ignore.case = TRUE)) %>%
+  #remove NULL values
+  mutate(across(c(recipient_country, location_code), gsub, pattern = "NULL(, )?", replacement = "")) %>% 
+  #transform empty values to NA
+  mutate(across(everything(), na_if, "")) %>% 
+  #separate project titles into prefix (DEC or CRT) and descriptive title
+  separate(title, into = c("prefix","title"), sep = "(?<=^[CTRDEC]{3}) ?-? ?", fill = "left", extra = "warn")
+
+#manually fix missing IATI ID
+d_projects$iati_id = gsub("CTR - Mission d'appui aux acteurs du programme de renforcement de la résilience à l'insécurité alimentaire et nutritionnelle au Nord mali (Key)","T05-EUTF-SAH-ML-01-04", d_projects$iati_id, fixed = T)
+
+#write to file
+write.csv(d_projects, "data/processed/EUTF_projects_akvo.csv", row.names = F, na = "")
+
+d_projects[c(1:3,8:12)] %>% arrange(-budget) %>% head(10) %>% knitr::kable()
+```
+
+
+## Results list
+
+For every project, create one row for every result indicator containing:
+
+- IATI project ID
+- result type: Reporting category of results, e.g. `EUTF Common Output Indicators`
+- title of indicator
+- reporting period start and end dates
+- target value
+- actual value
+
+```{r}
+
+d_results = xpathApply(d, "//iati-activity", function(node){
+  # note ID for every project
+  iati_id = node %>% xpathSApply("./description[@avko:type='4']", xmlValue,
+                                 namespaces = c("avko" = "http://akvo.org/iati-activities")) %>% ifelse(length(.)==0, NA, .)
+  #loop through all "result" nodes
+  node %>% xpathApply("./result", function(result){
+    
+    # note result type for each
+    result_type = result %>% xpathSApply("./title", xmlValue) %>% ifelse(length(.)==0, NA, .) %>% as.character()
+    
+    #loop through all "indicators" within result nodes
+    result %>% xpathApply("./indicator", function(indicator){
+      
+      data.frame(
+        #title of indicator
+        title = indicator %>% xpathSApply("./title", xmlValue) %>% paste(., collapse = ";;") %>% ifelse(length(.)==0, "", .),
+        # reporting period start and end
+        period_start = indicator %>% xpathSApply("./period/period-start", xmlGetAttr, "iso-date") %>%
+          ifelse(length(.)==0, "", .) %>% as.Date,
+        period_end = indicator %>% xpathSApply("./period/period-end", xmlGetAttr, "iso-date") %>%
+          ifelse(length(.)==0, "", .) %>% as.Date,
+        # target value
+        target = indicator %>% xpathSApply("./period/target", xmlGetAttr, "value") %>%
+          paste(., collapse = ";;") %>% ifelse(length(.)==0, "", .),
+        # actual value
+        actual = indicator %>% xpathSApply("./period/actual[not(./dimension)]", xmlGetAttr, "value") %>%
+          paste(., collapse = ";;") %>% ifelse(length(.)==0, "", .),
+        stringsAsFactors = FALSE
+      )
+    }) %>%
+      # combine into data frame, add result type at the front
+      bind_rows() %>% mutate(result_type = result_type, .before = everything())
+      
+  }) %>%
+    # combine into data frame, add project ID at the front
+    bind_rows() %>% mutate(iati_id = iati_id %>% as.character, .before = everything())
+}) %>%
+  bind_rows() # combine into data frame
+
+write.csv(d_results, "data/processed/EUTF_akvo_results.csv", na = "") #write to file
+
+
+d_results %>% head(10) %>% knitr::kable()
+```
+## Partner organizations list
+
+Create a list of every partner organization witht he following information:
+
+- name
+- AKVO type: a numerical value describing the type of organization
+- the number of occurrences in each role:
+  - funding partner (in XML: `role=1`)
+  - accountable partner (in XML: `role=2`)
+  - extending partner (in XML: `role=3`)
+  - implementing partner (in XML: `role=4`)
+
+```{r}
+#partners list
+d_orgs = data.frame(
+    name = xpathSApply(d, "//iati-activity/participating-org", xmlValue),
+    role = xpathSApply(d, "//iati-activity/participating-org", xmlGetAttr, "role"),
+    type = xpathSApply(d, "//iati-activity/participating-org", xmlGetAttr, "type"),
+    stringsAsFactors = FALSE
+  ) %>% 
+  # count occurrences by role
+  group_by(name, type, role) %>% summarise(n = n()) %>% 
+  # create one column for every role
+  pivot_wider(c(name, type), names_from = role, names_sort = TRUE, values_from = n, values_fill = 0) %>% 
+  rename(funding = `1`, accountable = `2`, extending = `3`, implementing = `4`)
+
+#write to file
+write_csv(d_orgs, "data/processed/EUTF_akvo_orgs.csv", na = "")
+
+d_orgs %>% arrange(-implementing) %>% head(10) %>% knitr::kable()
+```
+## Recipient country list
+
+For every project, list recipient countries and, if available, the `percentage` attributed to them, as follows:
+
+- IATI project ID
+- project budget
+- ISO alpha-2 country code of recipient country
+- percentage attributed to recipient country
+
+This can be used to estimate the budget share of regional projects attributable to each recipient country.
+
+```{r}
+d_recipients = xpathApply(d, "//iati-activity", function(node){
+  
+  iati_id = node %>% xpathSApply("./description[@avko:type='4']", xmlValue,
+                                 namespaces = c("avko" = "http://akvo.org/iati-activities")) %>% ifelse(length(.)==0, NA, .)
+  budget = node %>% xpathSApply("./budget", xmlValue) %>% as.numeric %>% sum %>% ifelse(length(.)==0, NA, .)
+  
+  node %>% xpathApply("./recipient-country", function(country){
+    
+    data.frame(
+      recipient_country = country %>% xpathSApply(".", xmlGetAttr, "code") %>% paste(., collapse = ";;") %>% ifelse(length(.)==0, NA, .),
+      recipient_percentage = country %>% xpathSApply(".", xmlGetAttr, "percentage") %>% paste(., collapse = ";;") %>% ifelse(length(.)==0, NA, .),
+      stringsAsFactors = FALSE
+      )
+    }) %>% bind_rows() %>%
+    mutate(across(everything(), gsub, pattern = "NULL(, )?", replacement = NA)) %>% 
+    mutate(iati_id = as.character(iati_id), budget = budget, .before = everything())
+}) %>% bind_rows()
+
+write.csv(d_recipients, "data/processed/EUTF_akvo_recipients.csv", na = "")
+
+d_recipients %>% head(10) %>% knitr::kable()
+```
+
+
+
+
+## List of discontinued projects
+
+To find projects that might have been discontinued, we search for projects referred to as "related activities" in the database that don't have their own separate entry.
+
+1. list all IATI IDs in separate `iati-activity`entries
+2. list all IATI IDs referred to in `related-activity`tags
+3. list which entries of 2. don't appear in 1.
+
+```{r}
+iati_id = d %>% xpathSApply("//iati-activity/description[@avko:type='4']", xmlValue,
+                            namespaces = c("avko" = "http://akvo.org/iati-activities"))
+
+all_iati = d %>% xpathSApply("//iati-activity/related-activity", xmlGetAttr, "ref") %>% unique %>%
+  gsub(pattern = "XI[-_]IAT[IA][-_]EC[-_]DEVCO[-_]|XI-IATI-EC_NEAR_", replacement = "", ignore.case = TRUE)
+
+all_iati[!(all_iati %in% iati_id)] %>% sort %>% paste(collapse = ", ")
+```
+
