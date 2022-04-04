@@ -4,11 +4,11 @@
 
 # Files
 
-| Name                      | Content                                                                           |
-|---------------------------|-----------------------------------------------------------------------------------|
-| `scripts/eutf_scrape.Rmd` | The main R markdown script. Run in RStudio to reproduce this analysis.            |
-| `scripts/data.RData`      | The R Data file containing the imported datasets. Use if csv import doesn’t work. |
-| `data/...`                | Data files                                                                        |
+| Name                       | Content                                                                |
+|----------------------------|------------------------------------------------------------------------|
+| `cleaning/eutf_scrape.Rmd` | The main R markdown script. Run in RStudio to reproduce this analysis. |
+| `cleaning/data.RData`      | The R Data file containing the finished datasets.                      |
+| `data/...`                 | Data files                                                             |
 
 # Data source
 

@@ -14,8 +14,8 @@ number_sections: yes
 
 | Name | Content |
 |---|---|
-| `scripts/eutf_scrape.Rmd`	| The main R markdown script. Run in RStudio to reproduce this analysis. |
-|`scripts/data.RData` | The R Data file containing the imported datasets. Use if csv import doesn't work. |
+| `cleaning/eutf_scrape.Rmd`	| The main R markdown script. Run in RStudio to reproduce this analysis. |
+|`cleaning/data.RData` | The R Data file containing the finished datasets. |
 |`data/...` | Data files |
 
 
@@ -292,5 +292,9 @@ all_iati = d %>% xpathSApply("//iati-activity/related-activity", xmlGetAttr, "re
   gsub(pattern = "XI[-_]IAT[IA][-_]EC[-_]DEVCO[-_]|XI-IATI-EC_NEAR_", replacement = "", ignore.case = TRUE)
 
 all_iati[!(all_iati %in% iati_id)] %>% sort %>% paste(collapse = ", ")
+```
+
+```{r}
+save.image("cleaning/data.RData")
 ```
 
