@@ -118,10 +118,13 @@ Reorganize data by donor category:
 
 ```{r}
 d = read.csv("data/raw/DAC3A_07032022.csv") %>%
-  filter(AIDTYPE == 305, DATATYPE == "D",
+  filter(#AIDTYPE == 305, DATATYPE == "D",
          Recipient %in% EUTF_recipients,
          Donor %in% EU_donors) %>% 
-  select(c(2,4,12,19))
+  select(Recipient, Donor, Year, Reference.Period)
+
+#for the purposes of this analysis, we'll only keep the filtered data set
+write.csv(d, "data/raw/DAC3A_07032022.csv")
 
 #EU_donors[!(EU_donors %in% (d$Donor %>% unique))] #bulgaria, malta not available
 
