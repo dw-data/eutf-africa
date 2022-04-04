@@ -1,0 +1,285 @@
+---
+title: "EUTF comparison with OECD official development aid"
+output:
+  md_document:
+    variant: gfm
+number_sections: yes
+---
+# EUTF for Africa: Comparison with OECD official development aid
+
+**Script by:** [Kira Schacht](https://www.twitter.com/daten_drang)
+
+How does the EU Emergency Trust Fund for Africa fit into the general EU development spending?
+
+The Organisation for Economic Cooperation and Development (OECD) collects data on official development assistance donated to developing countries globally.
+
+The EUTF budget mainly comes from the EU funds specifically set up to provide such development assistance - especially the European Development Fund, at least 90% of which are used for official development assistance (ODA). So while not every project funded through the EUTF for Africa may be fully eligible as ODA, the vast majority would be ([see e.g. Knoll & Sherrif 2017, p. 233](https://www.oecd.org/derec/sweden/201701-ECDPM-rapport.pdf)).
+
+In this analysis, we will compare the EUTF budget with the volume and regional distribution of official development assistance.
+
+
+
+# Files
+
+| Name | Content |
+|---|---|
+| `analysis_oda_comparison/eutf_oda_comparison‚.Rmd`	| The main R markdown script. Run in RStudio to reproduce this analysis. |
+|`data/...` | Data files |
+|`graphics/...` | Charts that came out of this analysis |
+
+
+# Data source
+
+Data on official development aid is collected by the OECD Development Aid Committee (DAC).
+
+The data can be accessed via the [OECD Data Portal](https://stats.oecd.org/), dataset **DAC3A**("Aid (ODA) commitments to countries and regions") or the [Query Qizard for International Development Statistics (QWIDS)](https://stats.oecd.org/qwids/)
+
+The data used here refers to official development aid (ODA) commitments by donor and recipient, from 2011 to 2020. Data from 2020 are not complete yet at the time of publication. Values are in in USD millions (constant 2019 prices).
+
+The version used for this analysis was downloaded on 07. March 2022.
+
+# Analysis
+
+Here is a step-by-step-explanation of the code we used for this analysis. You can explore it yourself by opening `eutf_scrape.Rmd` in RStudio.
+
+```{r setup, echo = FALSE}
+#Setup
+
+knitr::opts_chunk$set(echo = FALSE)
+#load packages
+
+knitr::opts_knit$set(root.dir = "/Users/schachtk/Documents/DW/xxx_EUTF/extern")
+
+library(needs)
+needs(tidyverse, treemapify)
+
+
+# initialize DW colors for charts
+dw_grey = c("grey14" = "#323c45", "grey13" = "#3b444d", "grey12" = "#4b545c", "grey11" = "#5c666e", "grey10" = "#6d7780", "grey9" = "#7f8891", "grey8" = "#9099a3", "grey7" = "#a1abb4", "grey6" = "#b2bcc5", "grey5" = "#bfc7ce", "grey4" = "#cbd2d8", "grey3" = "#d8dde2", "grey2" = "#e4e8eb", "grey1" = "#f1f3f5") %>% rev()
+dw_info = c("hellblau" = "#00a5ff", "dunkelblau" = "#002d5a", "orangerot" = "#d44820", "grün" = "#96be00", "rot" = "#be232d", "gelb" = "#f0c80f")
+dw_gradient = c("blau6" = "#002d5a", "blau5" = "#004887", "blau4" = "#0064b4", "blau3" = "#007acd", "blau2" = "#008fe6", "blau1" = "#00a5ff", "gelb" = "#f0c80f", "orangegelb" = "#f0aa00", "Hellorange" = "#ee8c0a", "Orange" = "#eb6e14", "Orangerot" = "#d44820", "rot" = "#be232d")
+
+```
+
+## Initialize country lists
+
+### Relevant recipient countries and regions
+
+EUTF recipient countries, regions of Africa and total values for Africa
+
+```{r}
+EUTF_recipients = c("Morocco", "Algeria", "Tunisia", "Libya", "Egypt",
+                    "Burkina Faso", "Cameroon", "Chad", "Côte d'Ivoire", "Gambia", "Ghana", "Guinea", "Mali", "Mauritania", "Niger", "Nigeria", "Senegal",
+                    "Djibouti", "Eritrea", "Ethiopia", "Kenya",
+                    "Somalia", "South Sudan", "Sudan", "Tanzania", "Uganda",
+                    "Africa, Total",
+                    "North of Sahara, Total", "South of Sahara, Total",
+                    "Southern Africa, Total", "Middle Africa, Total", "Western Africa, Total", "Eastern Africa, Total",
+                    "Developing Countries, Total")
+EUTF_recipients
+```
+
+### Relevant donor groups
+
+EU countries, EU institutions and overall donor groups for comparison.
+
+```{r}
+EU_donors = c("Official Donors, Total",
+              "Private Donors, Total", "Multilaterals, Total",
+              "Non-DAC Countries, Total","DAC Countries, Total", "EU Institutions",
+              "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Slovak Republic", "Slovenia", "Spain", "Sweden", "United Kingdom")
+
+EU_donors
+```
+
+## Read OECD Data
+
+Filter OECD data to display
+
+- Aid type: Total Commitments (`AIDTYPE == 305`)
+- Amount type: Constant Prices (`DATATYPE == "D"`)
+- Recipient in recipients list (see above)
+- Donor in donors list (see above)
+
+For EU member states Bulgaria and Malta, ODA commitments are not available disaggregated by recipient country. They are therefore excluded from this analysis.
+
+Reorganize data by donor category:
+
+- Official Donors, Total
+- European Union donors:
+  - Germany
+  - France
+  - other EU members
+  - EU institutions
+- other countries (excl. EU members)
+- other multilateral sources (excl. EU institutions)
+- Private Donors, Total
+
+
+```{r}
+d = read.csv("data/raw/DAC3A_07032022.csv") %>%
+  filter(AIDTYPE == 305, DATATYPE == "D",
+         Recipient %in% EUTF_recipients,
+         Donor %in% EU_donors) %>% 
+  select(c(2,4,12,19))
+
+#EU_donors[!(EU_donors %in% (d$Donor %>% unique))] #bulgaria, malta not available
+
+#reorganize data by donor category (see above)
+
+d_total = d %>% filter(Donor == "Official Donors, Total")
+
+
+d_multi = d %>% filter(Donor %in% c("Multilaterals, Total","EU Institutions")) %>% 
+  pivot_wider(names_from = Donor, values_from = Value) %>% 
+  mutate(Value = `Multilaterals, Total`-`EU Institutions`, Donor = "other multilaterals") %>% 
+  select(1,2,5,6)
+
+d_EU = d %>% filter(!grepl(", Total",Donor), Donor != "EU Institutions") %>% 
+  mutate(Donor = ifelse(Donor %in% c("Germany", "France"), Donor, "other EU members")) %>%
+  group_by(Recipient, Donor, Year) %>% summarise(Value = sum(Value))
+
+d_countries = d %>% filter(grepl("DAC",Donor)) %>% 
+  group_by(Recipient, Year) %>% summarise(Value = sum(Value)) %>% 
+  left_join(d_EU %>% group_by(Recipient, Year) %>% summarise(Value = sum(Value)), by = c("Recipient", "Year")) %>% 
+  mutate(Donor = "other countries", Value = Value.x - Value.y) %>% select(1,2,5,6)
+
+#combine into one dataset
+d = bind_rows(
+  d_EU, d_multi, d_countries,
+  d %>% filter(Donor %in% c("Private Donors, Total", "EU Institutions"))
+) %>%
+  #add column identifying EU donors (member states and EU institutions)
+  mutate(EU = ifelse(Donor %in% c("EU Institutions","Germany","France","other EU members"), T, F))
+
+rm(d_countries,d_EU,d_multi)
+
+d %>% head(10) %>% knitr::kable()
+```
+
+## Aid to africa as share of total aid administered
+
+What share of total development by EU / Non-EU donors goes to Africa?
+
+```{r}
+#aid to africa as share of total aid administered, over time
+d_plot = d %>%
+  filter(Recipient %in% c("Africa, Total", "Developing Countries, Total")) %>%
+  #sum across all donors, group by EU / Non-EU
+  group_by(EU, Recipient, Year) %>% summarise(Value = sum(Value)) %>% 
+  pivot_wider(names_from = Recipient, values_from = Value) %>% 
+  #calculate share going to Africa
+  mutate(share = `Africa, Total` / `Developing Countries, Total`)
+
+ggplot(d_plot, aes(Year, share, colour = EU, label = round(share*100))) +
+  geom_line() + geom_text(hjust = 0.5, vjust = -.5) +
+  scale_y_continuous(limits = c(0,1), labels = scales::label_percent()) + theme_minimal()
+```
+Around 30-35% of total development aid went to Africa in the past ten years. That is the case for both EU and Non-EU donors.
+
+## Regional distribution of aid in Africa
+
+Where do EU/Non-EU donors send aid within Africa?
+
+```{r}
+d_plot = d %>%
+  # filter for regions: north/south of sahara, 2019
+  filter(Recipient == "Africa, Total" | grepl("Sahara", Recipient), Year == 2019) %>%
+  #sum across donors, grouped by EU / Non-EU
+  group_by(EU, Recipient) %>% summarise(Value = sum(Value)) %>% mutate(Recipient = gsub(", Total","", Recipient)) %>%
+  pivot_wider(names_from = Recipient, values_from = Value) %>% 
+  mutate(unspecified = Africa - `North of Sahara` - `South of Sahara`) %>% 
+  pivot_longer(3:5) %>% 
+  #calculate shares
+  mutate(share = value / Africa,
+         EU = ifelse(EU,"EU and members","Other donors"),
+         name = factor(name, levels = unique(name) %>% rev))
+
+# stacked bar chart
+plot = ggplot(d_plot, aes(share, reorder(EU,desc(EU)), fill = name, label = paste0(round(share*100),"%"))) +
+  geom_col() + geom_text(position = position_stack(vjust = 0.5)) + 
+  scale_x_continuous(labels = scales::percent_format()) +
+  scale_fill_manual(values = c(dw_grey[5],dw_grey[7],dw_info[1]) %>% unname) +
+  labs(title = "EU Development aid focuses more on Northern Africa",
+       subtitle = "Official development aid 2019 by region and donors",
+       x = NULL, y = NULL) + theme_light() +
+  theme(legend.direction = "horizontal", legend.position = "top")
+
+ggsave("graphics/preliminary/EUTF_aid_distribution.svg", plot, device = "svg", height = 4, width = 6)
+
+```
+
+![369_en_EUTF_context_regions.png](graphics/369_en_EUTF_context_regions.png)
+
+The EU & its member states spends most of their aid in Sub-Saharan Africa, like other donors do too.
+But they spend more North of the Sahara than other donors (19%, 5 bn vs 3%, 1.5 bn)
+
+
+## Official development aid compared to EUTF budget
+
+How large is the EUTF budget (roughly EUR 5 billion) compared to total ODA commitments by EU members and institutions 2016 to 2020?
+
+Data for 2020 is still preliminary at the time of publication.
+
+```{r}
+d_plot = d %>% filter(!grepl(", Total", Recipient), Year > 2015) %>% 
+  mutate(Donor = ifelse(EU, Donor, "Non-EU Donors")) %>% 
+  group_by(EU, Donor) %>% summarise(Value = sum(Value, na.rm = T)/100)
+
+plot = ggplot(d_plot, aes(area = Value, group = Donor, subgroup = EU, fill = Donor, label = paste0(Donor, ":\n",round(Value)," bn"))) + 
+  geom_treemap() +
+  geom_treemap_subgroup_border(size = 5, colour = "white") +
+  geom_treemap_text() +
+  scale_fill_manual(values = c(dw_gradient[6:4], dw_grey[7], dw_gradient[3]) %>% unname) +
+  labs(title = "The EUTF budget is small compared to total aid commitments",
+       subtitle = "Aid commitments to EUTF recipient countries 2016-2019 compared to EUTF volume, USD") +
+  theme(legend.position="none")
+
+ggsave("graphics/preliminary/EUTF_aid_volume.svg", plot, device = "svg", height = 4, width = 6)
+```
+
+![371_en_EUTF_context_budgets.png](graphics/371_en_EUTF_context_budgets.png)
+
+
+### EUTF budget as share of ODA per country
+
+Even though the EUTF budget is relatively small compared to overall development aid commitments, it might still be a substantial share of overall aid for individual countries.
+
+You can find an overview of EUTF funding per recipient country in our Google sheets database. The data there has been extracted to `data/processed/EUTF_recipients_budgets.csv` for this part of the analysis.
+
+```{r}
+countries = read.csv2("data/processed/EUTF_recipients_budgets.csv") %>%
+  #display budget in million EUR
+  mutate(budget = as.numeric(budget)/10^6) %>% 
+  #merge ODA data
+  left_join(d %>% filter(Year > 2015) %>% 
+              group_by(Recipient, EU) %>% mutate(EU = ifelse(EU, "EU", "Non.EU")) %>%
+              summarise(Value = sum(Value, na.rm = T)) %>% pivot_wider(names_from = EU, values_from = Value),
+            by = c("country" = "Recipient")) %>% 
+  #calculate share of EUTF in development aid from the EU and total development aid
+  mutate(share_EU = budget / EU, share_total = budget / (EU + Non.EU)) %>% 
+  filter(!is.na(share_EU))
+```
+
+```{r}
+d_plot = countries %>%
+  #calculate absolute value of ODA excluding EUTF
+  mutate(EU = EU - budget) %>%
+  pivot_longer(4:6) %>%
+  group_by(country) %>%
+  #calculate shares
+  mutate(share = value/sum(value)) %>% ungroup %>%
+  mutate(country = reorder(country, share_total))
+
+#stacked bar chart
+plot = ggplot(d_plot, aes(share, country, fill = name)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c(dw_info[1:2],dw_grey[7]) %>% unname) +
+  labs(title = "EUTF funding makes up a large share of\ndevelopment aid for some countries",
+       subtitle = "EUTF funding as share of official development aid 2016-2019",
+       x = NULL, y = NULL, fill = NULL) + theme_minimal() +
+  theme(legend.direction = "horizontal", legend.position = "top")
+
+ggsave("graphics/preliminary/EUTF_aid_dependence.svg", plot, device = "svg", height = 8, width = 6)
+```
+![372_en_EUTF_context_dependence.png](graphics/372_en_EUTF_context_dependence.png)
