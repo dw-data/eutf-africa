@@ -52,11 +52,11 @@ For this article series, we conducted several on-the-record interviews with the 
 * [Kwaku Arhim-Sam](https://www.thh-friedensau.de/mitarbeiter/kwaku-arhin-sam/), Head of Evaluation an Friedensau University and co-author of a [study on Ghana and EU migration policy](https://dgap.org/en/research/publications/ghana-eus-migration-partner)
 * [Inken Bartels](https://www.imis.uni-osnabrueck.de/en/members_staff/imis_members/bartels_inken.html), migration researcher at the University of Osnabrück and author of a [Heinrich Böll study on the EUTF](https://www.boell.de/sites/default/files/money_against_migration.pdf)
 * [Alia Fakhry](https://dgap.org/en/user/26724/alia-fakhry), migration researcher at the German Council on Foreign Relations and author of the [study "How to talk about migration in Africa"](https://dgap.org/en/research/publications/how-talk-about-migration-africa) 
-* [David Kipp](),
+* [David Kipp](https://www.swp-berlin.org/en/researcher/david-kipp), migration researcher at the [German Institute for International and Security Affairs](https://www.swp-berlin.org/en/),
 * [Anna Knoll](https://ecdpm.org/people/annaknoll/), Head of the migration and mobility focus area at the think tank European Centre for Development Policy Management (ECDPM)  and co-author of a commentary on ["Why migration and mobility should – but probably won’t – be at the heart of the EU-AU Summit"](https://ecdpm.org/talking-points/why-migration-mobility-should-probably-wont-be-heart-eu-au-summit/)
-* [Sara Manzini](),
+* [Sara Lorenzini](https://webapps.unitn.it/du/en/Persona/PER0000845/Pubblicazioni), Professor of Modern History at the [School of International Studies](https://webapps.unitn.it/du/en/StrutturaAccademica/STO0008633/Persone) and at the Department of Humanities of the University of Trento
 * [Ottilia Anna Maunganidze](https://afripoli.org/profile/ottilia-anna-maunganidze), Head of Special Projects in the Office of the Executive Director at the [Institute for Security Studies (ISS)](https://issafrica.org/author/ottilia-anna-maunganidze)
-* [Jan Orbie](),
+* [Jan Orbie](https://www.ugent.be/ps/politiekewetenschappen/gies/en/team/professors/jan-orbie), director of the [Centre for EU Studies at Ghent University](https://www.ugent.be/ps/politiekewetenschappen/gies/en)
 
 Additional interviews were conducted by collaborating partners [VoxEurop](https://voxeurop.eu/en/), [Openpolis](https://www.openpolis.it/) and [OBCT](https://www.balcanicaucaso.org/eng)
 
