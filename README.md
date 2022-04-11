@@ -35,8 +35,9 @@ Data for first-time asylum-applications were downloaded from the Eurostat databa
 Data for displaced people were downloaded from UNHCR on February 8, 2022. The original file can be found in the [data](data/) folder. For our analysis, we summed up all people of concern to UNHCR, including refugees, asylum-seekers, internally displaced people and stateless people originating from and residing in an African country.
 
 
-### ...Kira's sources
+### OECD: Official Development Aid
 
+Data on official development aid is collected by the OECD Development Aid Committee (DAC). It can be accessed via the [OECD Data Portal](https://stats.oecd.org/), dataset **DAC3A**(“Aid (ODA) commitments to countries and regions”) or the [Query Qizard for International Development Statistics (QWIDS)](https://stats.oecd.org/qwids/).  The data used here refers to official development aid (ODA) commitments by donor and recipient, from 2011 to 2020. Data from 2020 are not complete yet at the time of publication.
 
 
 
