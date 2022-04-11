@@ -24,15 +24,15 @@ The AVKO database distinguishes between parent projects and also lists the child
 
 ### Frontex: Detected Irregular Border Crossings
 
-Data for detected irregular border crossings were downloaded from the Frontex Website on February 8, 2022. The original file can be found in the [data](data/)folder.
+Data for detected irregular border crossings were downloaded from the Frontex Website on February 8, 2022. The original file can be found in the [data](data/) folder.
 
 ### Eurostat: First-time asylum-applications
 
-Data for first-time asylum-applications were downloaded from the Eurostat database (entry: migr_asyappctzm) on February 8, 2022. Until January 2020, we are looking at EU-28, including Britain, and from February 2020 referring with EU to the EU_27, excluding Britain. The original files can be found in the [data](data/)folder.
+Data for first-time asylum-applications were downloaded from the Eurostat database (entry: migr_asyappctzm) on February 8, 2022. Until January 2020, we are looking at EU-28, including Britain, and from February 2020 referring with EU to the EU_27, excluding Britain. The original files can be found in the [data](data/) folder.
 
 ### UNHCR
 
-Data for displaced people were downloaded from UNHCR on February 8, 2022. The original file can be found in the [data](data/)folder. For our analysis, we summed up all people of concern to UNHCR, including refugees, asylum-seekers, internally displaced people and stateless people originating from and residing in an African country.
+Data for displaced people were downloaded from UNHCR on February 8, 2022. The original file can be found in the [data](data/) folder. For our analysis, we summed up all people of concern to UNHCR, including refugees, asylum-seekers, internally displaced people and stateless people originating from and residing in an African country.
 
 
 ### ...Kira's sources
@@ -51,17 +51,17 @@ For this article series, we conducted several on-the-record interviews with the 
 
 * [Kwaku Arhim-Sam](https://www.thh-friedensau.de/mitarbeiter/kwaku-arhin-sam/), Head of Evaluation an Friedensau University and co-author of a [study on Ghana and EU migration policy](https://dgap.org/en/research/publications/ghana-eus-migration-partner)
 * [Inken Bartels](https://www.imis.uni-osnabrueck.de/en/members_staff/imis_members/bartels_inken.html), migration researcher at the University of Osnabrück and author of a [Heinrich Böll study on the EUTF](https://www.boell.de/sites/default/files/money_against_migration.pdf)
-* [Alia Fakhry](https://dgap.org/en/user/26724/alia-fakhry), migration researcher at the German Council on Foreign Relations and author of the [study "How to talk about migration in Africa"](https://dgap.org/en/research/publications/how-talk-about-migration-africa) 
+* [Alia Fakhry](https://dgap.org/en/user/26724/alia-fakhry), migration researcher at the German Council on Foreign Relations and author of the [study "How to talk about migration in Africa"](https://dgap.org/en/research/publications/how-talk-about-migration-africa) and co-author of a commentary on ["Why migration and mobility should – but probably won’t – be at the heart of the EU-AU Summit"](https://ecdpm.org/talking-points/why-migration-mobility-should-probably-wont-be-heart-eu-au-summit/)
 * [David Kipp](),
 * [Anna Knoll](https://ecdpm.org/people/annaknoll/), Head of the migration and mobility focus area at the think tank European Centre for Development Policy Management (ECDPM)
 * [Sara Manzini](),
-* [Ottilia Anna Maunganidze](https://afripoli.org/profile/ottilia-anna-maunganidze), Head of Special Projects in the Office of the Executive Director at the [Institute for Security Studies (ISS)](https://issafrica.org/author/ottilia-anna-maunganidze) and co-author of a commentary on ["Why migration and mobility should – but probably won’t – be at the heart of the EU-AU Summit"](https://ecdpm.org/talking-points/why-migration-mobility-should-probably-wont-be-heart-eu-au-summit/)
+* [Ottilia Anna Maunganidze](https://afripoli.org/profile/ottilia-anna-maunganidze), Head of Special Projects in the Office of the Executive Director at the [Institute for Security Studies (ISS)](https://issafrica.org/author/ottilia-anna-maunganidze) and author of a policy brief on [Africa Europe migration](http://issafrica.s3.amazonaws.com/site/uploads/PB-166.pdf)
 * [Jan Orbie](),
 
 Additional interviews were conducted by collaborating partners [VoxEurop](https://voxeurop.eu/en/), [Openpolis](https://www.openpolis.it/) and [OBCT](https://www.balcanicaucaso.org/eng)
 
 
-We also contacted the Commission asking for clarification on 15 questions regarding the data presented on the EUTF's website - after we noticed some inconsistencies - and the EC's assessment of the EUTF. The response did not arrive in time to be incorporated to significant extent in our reporting. A selection of relevant questions and answers can be found in the [documents](documents/) folder.
+We also contacted the Commission asking for clarification on questions regarding the data presented on the EUTF's website - after we noticed some inconsistencies -, statements in EUTF documents and the EC's assessment of the EUTF. The response did not arrive in time to be incorporated to significant extent in our reporting. A selection of relevant questions and answers can be found in the [documents](documents/) folder.
 
 ## Documents
 
