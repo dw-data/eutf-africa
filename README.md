@@ -9,7 +9,7 @@ Editing: Milan Gagnon
 This project is a collaboration of several partners within the [European Data Journalism Network (EDJNet)](https://www.europeandatajournalism.eu/). While DW was project leads, [VoxEurop](https://voxeurop.eu/en/), [Openpolis](https://www.openpolis.it/) and [OBCT](https://www.balcanicaucaso.org/eng) were contributing partners.
 
 This project consists of multiple stories published over consecutive days:
-- DW: "How the EU spent billions to halt migration from Africa" evaluating whether the EUTF reached its goals –– *available in [English](https://dw.com/a-61362906) and [German](https://dw.com/a-)*
+- DW: "How the EU spent billions to halt migration from Africa" evaluating whether the EUTF reached its goals –– *available in [English](https://dw.com/a-61362906) and [German](https://dw.com/a-61443980)*
 <!-- - DW: "EU uses development aid to strongarm Africa on migration" placing the EUTF in context of European development aid efforts –– *available in [English](https://dw.com/a-61375189) and [German](https://dw.com/a-)* -->
 <!-- - DW: "How Germany manages EU funds in Africa" outlining the role of Germany as the EUTF's biggest state donor –– *available in [English](https://dw.com/a-61375626) and [German](https://dw.com/a-)* -->
 
@@ -56,7 +56,7 @@ For this article series, we conducted several on-the-record interviews with the 
 * [David Kipp](https://www.swp-berlin.org/en/researcher/david-kipp), migration researcher at the [German Institute for International and Security Affairs](https://www.swp-berlin.org/en/),
 * [Anna Knoll](https://ecdpm.org/people/annaknoll/), Head of the migration and mobility focus area at the think tank European Centre for Development Policy Management (ECDPM)  and co-author of a commentary on ["Why migration and mobility should – but probably won’t – be at the heart of the EU-AU Summit"](https://ecdpm.org/talking-points/why-migration-mobility-should-probably-wont-be-heart-eu-au-summit/)
 * [Sara Lorenzini](https://webapps.unitn.it/du/en/Persona/PER0000845/Pubblicazioni), Professor of Modern History at the [School of International Studies](https://webapps.unitn.it/du/en/StrutturaAccademica/STO0008633/Persone) and at the Department of Humanities of the University of Trento
-* [Ottilia Anna Maunganidze](https://afripoli.org/profile/ottilia-anna-maunganidze), Head of Special Projects in the Office of the Executive Director at the [Institute for Security Studies (ISS)](https://issafrica.org/author/ottilia-anna-maunganidze)
+* [Ottilia Anna Maunganidze](https://afripoli.org/profile/ottilia-anna-maunganidze), Head of Special Projects in the Office of the Executive Director at the [Institute for Security Studies (ISS)](https://issafrica.org/author/ottilia-anna-maunganidze) and author of a policy brief on [Africa Europe migration](http://issafrica.s3.amazonaws.com/site/uploads/PB-166.pdf)
 * [Jan Orbie](https://www.ugent.be/ps/politiekewetenschappen/gies/en/team/professors/jan-orbie), director of the [Centre for EU Studies at Ghent University](https://www.ugent.be/ps/politiekewetenschappen/gies/en)
 
 Additional interviews were conducted by collaborating partners [VoxEurop](https://voxeurop.eu/en/), [Openpolis](https://www.openpolis.it/) and [OBCT](https://www.balcanicaucaso.org/eng)
