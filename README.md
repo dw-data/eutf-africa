@@ -11,7 +11,7 @@ This project is a collaboration of several partners within the [European Data Jo
 This project consists of multiple stories published over consecutive days:
 - DW: "How the EU spent billions to halt migration from Africa" evaluating whether the EUTF reached its goals –– *available in [English](https://dw.com/a-61362906) and [German](https://dw.com/a-61443980)*
 <!-- - DW: "EU uses development aid to strongarm Africa on migration" placing the EUTF in context of European development aid efforts –– *available in [English](https://dw.com/a-61375189) and [German](https://dw.com/a-)* -->
-<!-- - DW: "How Germany manages EU funds in Africa" outlining the role of Germany as the EUTF's biggest state donor –– *available in [English](https://dw.com/a-61375626) and [German](https://dw.com/a-)* -->
+<!-- - DW: "How Germany manages EU funds in Africa" outlining the role of Germany as the EUTF's biggest state donor –– *available in [English](https://dw.com/a-61375626), [Arabic](https://p.dw.com/p/49qAg) and [German](https://dw.com/a-61443980)* -->
 
 
 ## Data sources
