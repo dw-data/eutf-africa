@@ -10,7 +10,7 @@ This project is a collaboration of several partners within the [European Data Jo
 
 This project consists of multiple stories published:
 
-- DW: "How the EU spent billions to halt migration from Africa" evaluating whether the EUTF reached its goals –– *available in [English](https://dw.com/a-61362906), [Arabic](https://p.dw.com/p/49qAg) and [German](https://dw.com/a-61443980)*
+- DW: "How the EU spent billions to halt migration from Africa" evaluating whether the EUTF reached its goals –– *available in [English](https://dw.com/a-61362906), [Arabic](https://p.dw.com/p/49qAg), [French](https://www.dw.com/fr/bilan-eutf-afrique-ue/a-61609300) and [German](https://dw.com/a-61443980)*
 - DW: "EU uses development aid to strongarm Africa on migration" placing the EUTF in context of European development aid efforts –– *available in [English](https://dw.com/a-61375189), [Arabic](https://p.dw.com/p/49uV7) and [German](https://dw.com/a-61430196)*
  - DW: "How Germany manages EU funds in Africa" outlining the role of Germany as the EUTF's biggest state donor –– *available in [English](https://dw.com/a-61375626), [Arabic](https://p.dw.com/p/49yN3) and [German](https://dw.com/a-61445516)*
 - Openpolis: A cosa sono serviti i soldi dell’Eutf? [Italian](https://www.openpolis.it/a-cosa-sono-serviti-i-soldi-delleutf/)
